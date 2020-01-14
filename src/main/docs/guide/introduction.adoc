@@ -1,0 +1,8 @@
+This project brings rate limiting support to Micronaut.
+
+To get started, you need to declare a dependency on one of the implementations. For example:
+
+dependency:io.micronaut.ratelimiter:micronaut-ratelimiter-resilience4j[]
+
+To use a snapshot version of this library, check the
+https://docs.micronaut.io/latest/guide/index.html#usingsnapshots[documentation to use snapshots].
