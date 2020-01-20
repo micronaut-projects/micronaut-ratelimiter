@@ -1,8 +1,6 @@
-This project brings rate limiting support to Micronaut.
+This project brings rate limiting support to Micronaut. The core module contains the common functionality and configuration. An implementation is required to have any rate limiting functionality.
 
-To get started, you need to declare a dependency on one of the implementations. For example:
-
-dependency:io.micronaut.ratelimiter:micronaut-ratelimiter-resilience4j[]
+To get started, you need to declare a dependency on one of the implementations. See the next section on installation.
 
 To use a snapshot version of this library, check the
 https://docs.micronaut.io/latest/guide/index.html#usingsnapshots[documentation to use snapshots].

@@ -1,0 +1,6 @@
+An implementation of rate limiting for Micronaut has been created using Resilience4j.
+
+To get started, simply express a dependency on this module:
+
+dependency:micronaut-ratelimiter-resilience4j[groupId="io.micronaut.ratelimiter", scope="runtime"]
+

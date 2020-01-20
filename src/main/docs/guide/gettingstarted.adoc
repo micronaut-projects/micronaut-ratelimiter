@@ -1,0 +1,5 @@
+Before you can get started controlling rate limits, there is one concept to understand and potentially an implementation to write. Rate limits are typically broken up into groups or "buckets". For example a rate limit may apply per user, or per organization, etc. There is no clear common default way of grouping the users of an API so that implementation is up to you. An interface api:ratelimiter.bucket.BucketNameResolver[] is used to allow for custom bucket name resolution logic.
+
+We have provided a simple implementation that rate limits by IP address. That implementation is disabled by default. To turn it on, set `micronaut.ratelimiting.ip-address-resolver: true` in your configuration. This implementation is mostly to make getting started with rate limiting easier.
+
+Once an implementation of api:ratelimiter.bucket.BucketNameResolver[], by default all requests will be rate limited using the defaults set by the rate limiting implementation.

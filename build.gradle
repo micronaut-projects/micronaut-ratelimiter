@@ -1,17 +1,16 @@
 buildscript {
     repositories {
-        mavenLocal()
         maven { url "https://repo.grails.org/grails/core" }
     }
     dependencies {
-        classpath "org.grails:grails-gradle-plugin:$grailsVersion"
         classpath "org.grails:grails-docs:$grailsVersion"
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
         classpath 'com.bmuschko:gradle-nexus-plugin:2.3.1'
         classpath 'io.github.groovylang.groovydoc:groovydoc-gradle-plugin:1.0.1'
-        classpath "io.micronaut.docs:micronaut-docs-asciidoc-extensions:1.0.15"
-        classpath "io.micronaut.docs:micronaut-docs-gradle-plugins:1.0.15"
-        classpath 'com.adarshr:gradle-test-logger-plugin:2.0.0'
+        classpath "io.micronaut.docs:micronaut-docs-asciidoc-extensions:$micronautDocsVersion"
+        classpath "io.micronaut.docs:micronaut-docs-gradle-plugins:$micronautDocsVersion"
+        classpath "io.spring.nohttp:nohttp-gradle:0.0.4.RELEASE"
+        classpath "com.github.jengelman.gradle.plugins:shadow:5.1.0"
     }
 }
 
@@ -20,9 +19,7 @@ plugins {
 }
 
 repositories {
-    mavenLocal()
-    maven { url "https://repo.grails.org/grails/core" }
-    maven { url "http://oss.sonatype.org/content/repositories/snapshots/" }
+    mavenCentral()
 }
 
 version project.projectVersion
@@ -36,34 +33,30 @@ ext {
 
 subprojects { Project subproject ->
 
+    repositories {
+        maven { url "https://repo.grails.org/grails/core" }
+        maven { url "https://oss.jfrog.org/oss-snapshot-local" }
+    }
+
+    if (subproject.name.contains('example') || subproject.name.startsWith('benchmark')) {
+        return
+    }
+
     version project.projectVersion
-    group "io.micronaut.cache"
+    group "io.micronaut.ratelimiter"
     ext {
         isConfiguration = subproject.projectDir.parentFile.name == 'configurations'
         isBuildSnapshot = version.toString().endsWith("-SNAPSHOT")
     }
-    repositories {
-        mavenLocal()
-        maven { url "https://repo.grails.org/grails/core" }
-        maven { url "https://oss.jfrog.org/oss-snapshot-local/" }
-    }
 
+    apply plugin: "io.spring.nohttp"
     apply plugin:"groovy"
-    apply plugin:"java"
-    apply plugin: "io.spring.dependency-management"
-
-    dependencyManagement {
-        imports {
-            mavenBom "io.micronaut:micronaut-bom:$micronautVersion"
-        }
-    }
+    apply plugin:"java-library"
 
     sourceCompatibility = '1.8'
     targetCompatibility = '1.8'
 
-    if (!subproject.name.contains('tck')) {
-        apply from:"https://raw.githubusercontent.com/micronaut-projects/micronaut-build/v1.0.0/publishing.gradle"
-    }
+    apply from:"https://raw.githubusercontent.com/micronaut-projects/micronaut-build/v${micronautBuildVersion}/publishing.gradle"
 
 
     jar {
@@ -87,8 +80,8 @@ subprojects { Project subproject ->
             System.out.flush()
         }
 
-        reports.html.enabled = !System.getenv("TRAVIS")
-        reports.junitXml.enabled = !System.getenv("TRAVIS")
+        reports.html.enabled = !System.getenv("GITHUB_ACTIONS")
+        reports.junitXml.enabled = !System.getenv("GITHUB_ACTIONS")
 
     }
 
@@ -103,27 +96,25 @@ subprojects { Project subproject ->
             }
         }
     }
-
     dependencies {
+        annotationProcessor platform("io.micronaut:micronaut-bom:$micronautVersion")
+        testAnnotationProcessor platform("io.micronaut:micronaut-bom:$micronautVersion")
+        implementation platform("io.micronaut:micronaut-bom:$micronautVersion")
+
         documentation "org.codehaus.groovy:groovy-templates:$groovyVersion"
         documentation "org.codehaus.groovy:groovy-dateutil:$groovyVersion"
 
-        testCompile "cglib:cglib-nodep:3.3.0"
-        testCompile "org.objenesis:objenesis:3.1"
-
-        testCompile("org.spockframework:spock-core:${spockVersion}") {
+        testImplementation("org.spockframework:spock-core:${spockVersion}") {
             exclude module:'groovy-all'
         }
-        testCompile "cglib:cglib-nodep:3.3.0"
-        testCompile "org.objenesis:objenesis:3.1"
 
-        testRuntime "ch.qos.logback:logback-classic:1.2.3"
-        testCompile "org.codehaus.groovy:groovy-test:$groovyVersion"
+        testImplementation "io.micronaut:micronaut-inject-groovy:$micronautVersion"
+        testImplementation "io.micronaut.test:micronaut-test-spock:$micronautTestVersion"
+        testImplementation "cglib:cglib-nodep:3.3.0"
+        testImplementation "org.objenesis:objenesis:3.1"
 
-        if(JavaVersion.current().java9Compatible){
-            // JAX-B dependencies for JDK 9+
-            implementation "javax.xml.bind:jaxb-api:2.3.1"
-        }
+        testRuntimeOnly "ch.qos.logback:logback-classic:1.2.3"
+        testImplementation "org.codehaus.groovy:groovy-test:$groovyVersion"
     }
 
     groovydoc {
@@ -132,20 +123,29 @@ subprojects { Project subproject ->
 
     task allDeps(type: DependencyReportTask) {}
 
-    apply plugin: 'checkstyle'
+    if (subproject.name != 'data-tck') {
+        apply plugin: 'checkstyle'
 
-    checkstyle {
-        toolVersion = 8.10
-        configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
+        checkstyle {
+            toolVersion = 8.16
+            configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
 
-        // Per submodule
-        maxErrors = 0
-        maxWarnings = 10
+            // Per submodule
+            maxErrors = 1
+            maxWarnings = 10
 
-        showViolations = true
+            showViolations = true
+        }
+        checkstyleTest.enabled = false
     }
 
-    checkstyleTest.enabled = false
+    tasks.withType(GroovyCompile) {
+        groovyOptions.forkOptions.jvmArgs.add('-Dgroovy.parameters=true')
+    }
+    tasks.withType(JavaCompile){
+        options.encoding = "UTF-8"
+        options.compilerArgs.add('-parameters')
+    }
 }
 
 apply from:"https://raw.githubusercontent.com/micronaut-projects/micronaut-docs/v${micronautDocsVersion}/gradle/docs.gradle"
@@ -159,15 +159,18 @@ allprojects {
             testOutputDir file('build/classes/groovy/test')
         }
     }
+    if (it.name.contains('example') || it.name.startsWith('benchmark')) {
+        return
+    }
     apply from: rootProject.file('gradle/license.gradle')
+}
 
-    apply plugin: 'com.adarshr.test-logger'
-
-    testlogger {
-        showFullStackTraces true
-        showStandardStreams true
-        showPassedStandardStreams false
-        showSkippedStandardStreams false
-        showFailedStandardStreams true
+project.afterEvaluate {
+    allprojects.repositories.each { handler ->
+        handler.each {
+            if (it.url.toString().startsWith("http://")) {
+                throw new GradleException("Build should not define insecure HTTP-based Maven repostories")
+            }
+        }
     }
 }

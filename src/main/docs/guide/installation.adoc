@@ -1,0 +1,1 @@
+To start using rate limiters in Micronaut, simply express a dependency on one of the implementations that are available. See the documentation for your desired implementation for details.

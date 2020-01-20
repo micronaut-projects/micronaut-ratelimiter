@@ -1,0 +1,12 @@
+dependencies {
+    annotationProcessor "io.micronaut:micronaut-inject-java"
+
+    implementation "io.github.resilience4j:resilience4j-ratelimiter:1.2.0"
+    implementation "io.github.resilience4j:resilience4j-rxjava2:1.2.0"
+    api "io.micronaut:micronaut-inject"
+    api "io.micronaut:micronaut-http-server"
+    api project(":ratelimiter-core")
+
+    testImplementation "io.micronaut:micronaut-http-client"
+    testImplementation "io.micronaut:micronaut-http-server-netty"
+}

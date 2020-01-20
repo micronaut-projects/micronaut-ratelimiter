@@ -1,1 +1,8 @@
 introduction: Introduction
+installation: Installation
+gettingstarted: Getting Started
+configuration: Configuration
+resilience4j:
+  title: Resilience4j
+  resilience4j-configuration: Configuration
+
