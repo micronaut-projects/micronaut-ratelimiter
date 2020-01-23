@@ -6,6 +6,7 @@ dependencies {
     testImplementation platform("io.micronaut:micronaut-bom:$micronautVersion")
     testImplementation project(":ratelimiter-core")
     testImplementation "io.micronaut:micronaut-http"
+    testImplementation "io.micronaut:micronaut-inject-groovy:$micronautVersion"
     testImplementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.50"
     testImplementation "org.jetbrains.kotlin:kotlin-reflect:1.3.50"
 }
