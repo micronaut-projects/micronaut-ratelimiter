@@ -1,0 +1,13 @@
+The core library provides configuration that applies to every implementation. By default when an implementation is on the classpath and enabled, rate limiting will apply to all APIs. You can limit the functionality to a subset of your controllers and methods through the following configuration.
+
+[source,yaml]
+----
+micronaut:
+  ratelimiting:
+    paths: // <1>
+      - /api/**
+----
+
+<1> One or more Ant style paths can be supplied to denote what parts of your application should be rate limited.
+
+IMPORTANT: The presence of the ann:ratelimiter.annotation.RateLimit[] annotation does not automatically allow an API to be being rate limited. All APIs must be in one of the paths supplied via configuration.

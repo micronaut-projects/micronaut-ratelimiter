@@ -38,6 +38,10 @@ subprojects { Project subproject ->
         maven { url "https://oss.jfrog.org/oss-snapshot-local" }
     }
 
+    apply plugin: "io.spring.nohttp"
+    apply plugin:"groovy"
+    apply plugin:"java-library"
+
     if (subproject.name.contains('example') || subproject.name.startsWith('benchmark')) {
         return
     }
@@ -48,10 +52,6 @@ subprojects { Project subproject ->
         isConfiguration = subproject.projectDir.parentFile.name == 'configurations'
         isBuildSnapshot = version.toString().endsWith("-SNAPSHOT")
     }
-
-    apply plugin: "io.spring.nohttp"
-    apply plugin:"groovy"
-    apply plugin:"java-library"
 
     sourceCompatibility = '1.8'
     targetCompatibility = '1.8'
@@ -103,6 +103,8 @@ subprojects { Project subproject ->
 
         documentation "org.codehaus.groovy:groovy-templates:$groovyVersion"
         documentation "org.codehaus.groovy:groovy-dateutil:$groovyVersion"
+
+        annotationProcessor "io.micronaut.docs:micronaut-docs-asciidoc-config-props:$micronautDocsVersion"
 
         testImplementation("org.spockframework:spock-core:${spockVersion}") {
             exclude module:'groovy-all'

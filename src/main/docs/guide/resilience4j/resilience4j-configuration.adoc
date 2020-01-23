@@ -1,0 +1,26 @@
+Resilience4j only has support for a limited number of options, and those options are configurable through Micronaut configuration. Each grouping of options is referred to as a "configuration" and those configurations can be referenced in your code through the ann:ratelimiter.annotation.RateLimiter[] annotation.
+
+If the annotation is missing, then the default configuration will be applied. The default configuration can be supplied through the special name of "default" in your configuration. If that is missing then the defaults provided by the Resilience4j library will be used. For example:
+
+[source,yaml]
+----
+resilience4j:
+  ratelimiter:
+    configurations:
+      default: // <1>
+        timeout: 100ms
+      low: // <2>
+        period: 10s
+        limit: 1
+      high: // <3>
+        period: 1s
+        limit: 100
+----
+
+<1> The default configuration that will be used if no configuration is set via the annotation. Note that the missing values will inherit the defaults from Resilience4j.
+<2> A configuration called "low". This configuration only allows a single request every 10 seconds.
+<3> A configuration called "high". This configuration allows for 100 requests every second.
+
+IMPORTANT: The "low" and "high" configurations do not inherit from the default. The default configuration only applies when there is no specified configuration for a rate limited API.
+
+For a full reference of the resilience4j options, see the See link:configurationreference.html[configuration reference].

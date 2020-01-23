@@ -1,0 +1,3 @@
+When the Resilience4j rate limiter rejects a request, a `RequestNotPermitted` exception will be emitted. This exception can be handled just like any other in Micronaut and a default implementation of link:{apimicronaut}http/server/exceptions/ExceptionHandler.html[ExceptionHandler] comes with this library to turn the exception into the standard 429 response.
+
+If the default implementation is not sufficient, you may override it by replacing api:ratelimiter.resilience4j.response.RequestNotPermittedHandler[] with your own implementation.

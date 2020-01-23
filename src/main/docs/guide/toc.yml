@@ -1,8 +1,10 @@
 introduction: Introduction
 installation: Installation
-gettingstarted: Getting Started
 configuration: Configuration
+gettingstarted: Getting Started
+usage: Usage
 resilience4j:
   title: Resilience4j
   resilience4j-configuration: Configuration
+  resilience4j-response: Error Response
 

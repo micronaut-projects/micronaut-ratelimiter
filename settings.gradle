@@ -2,3 +2,5 @@ rootProject.name = 'micronaut-ratelimiter'
 
 include 'ratelimiter-core'
 include 'ratelimiter-resilience4j'
+
+include 'docs-examples'
