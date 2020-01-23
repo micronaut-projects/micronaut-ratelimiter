@@ -126,6 +126,7 @@ subprojects { Project subproject ->
     task allDeps(type: DependencyReportTask) {}
 
     if (subproject.name != 'data-tck') {
+        System.out.println(subproject.name + " is getting checkstyle")
         apply plugin: 'checkstyle'
 
         checkstyle {
