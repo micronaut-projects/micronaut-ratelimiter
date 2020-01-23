@@ -48,6 +48,11 @@ class RateLimitingFilter extends OncePerRequestHttpServerFilter {
     private final RateLimiterRegistry registry;
     private final RateLimitingSupport rateLimitingSupport;
 
+    /**
+     * @param bucketNameResolver  The bucket name resolver
+     * @param registry            The rate limiter registry
+     * @param rateLimitingSupport The rate limiting support
+     */
     RateLimitingFilter(BucketNameResolver bucketNameResolver,
                        RateLimiterRegistry registry,
                        RateLimitingSupport rateLimitingSupport) {

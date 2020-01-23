@@ -35,6 +35,9 @@ class IpAddressBucketNameResolver implements BucketNameResolver {
 
     private final HttpClientAddressResolver clientAddressResolver;
 
+    /**
+     * @param clientAddressResolver The client address resolver
+     */
     IpAddressBucketNameResolver(HttpClientAddressResolver clientAddressResolver) {
         this.clientAddressResolver = clientAddressResolver;
     }
