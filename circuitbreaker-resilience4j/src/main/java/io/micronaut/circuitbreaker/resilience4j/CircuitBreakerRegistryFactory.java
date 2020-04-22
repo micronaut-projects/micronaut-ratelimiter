@@ -1,9 +1,7 @@
 package io.micronaut.circuitbreaker.resilience4j;
 
-import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
-import io.github.resilience4j.ratelimiter.RateLimiterConfig;
 
 import javax.inject.Singleton;
 import java.util.HashMap;
@@ -23,7 +21,7 @@ public class CircuitBreakerRegistryFactory {
             configMap.put(config.getName(), buildConfig(builder, config));
         }
 
-        io.vavr.collection.Map<String, String> tags = null;
+        io.vavr.collection.Map<String, String> tags = registryConfiguration.getTags().map(io.vavr.collection.HashMap::ofAll).orElse(io.vavr.collection.HashMap.empty());
         return CircuitBreakerRegistry.of(configMap, tags);
     }
 
