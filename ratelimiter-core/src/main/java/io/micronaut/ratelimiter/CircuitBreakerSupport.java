@@ -1,10 +1,10 @@
-package io.micronaut.circuitbreaker;
+package io.micronaut.ratelimiter;
 
-import io.micronaut.circuitbreaker.annotation.CircuitBreaker;
-import io.micronaut.circuitbreaker.annotation.NoCircuitBreaker;
 import io.micronaut.core.annotation.AnnotationMetadata;
 import io.micronaut.http.HttpAttributes;
 import io.micronaut.http.HttpRequest;
+import io.micronaut.ratelimiter.annotation.CircuitBreaker;
+import io.micronaut.ratelimiter.annotation.NoCircuitBreaker;
 import io.micronaut.web.router.RouteMatch;
 
 import javax.inject.Singleton;

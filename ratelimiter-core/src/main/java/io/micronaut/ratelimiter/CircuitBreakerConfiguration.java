@@ -1,4 +1,4 @@
-package io.micronaut.circuitbreaker;
+package io.micronaut.ratelimiter;
 
 import io.micronaut.context.annotation.ConfigurationProperties;
 

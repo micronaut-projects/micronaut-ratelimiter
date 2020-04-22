@@ -3,20 +3,20 @@ package io.micronaut.circuitbreaker.resilience4j.filter;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.github.resilience4j.circuitbreaker.operator.CircuitBreakerOperator;
-import io.micronaut.circuitbreaker.CircuitBreakerSupport;
-import io.micronaut.circuitbreaker.bucket.BucketNameResolver;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.MutableHttpResponse;
 import io.micronaut.http.annotation.Filter;
 import io.micronaut.http.filter.OncePerRequestHttpServerFilter;
 import io.micronaut.http.filter.ServerFilterChain;
+import io.micronaut.ratelimiter.CircuitBreakerSupport;
+import io.micronaut.ratelimiter.bucket.BucketNameResolver;
 import io.reactivex.Flowable;
 import org.reactivestreams.Publisher;
 
 import java.util.Optional;
 
-import static io.micronaut.circuitbreaker.CircuitBreakerConfiguration.PATH_KEY;
+import static io.micronaut.ratelimiter.CircuitBreakerConfiguration.PATH_KEY;
 
 
 @Internal
@@ -35,6 +35,11 @@ public class CircuitBreakerFilter extends OncePerRequestHttpServerFilter {
     }
 
     @Override
+    public int getOrder() {
+        return ORDER;
+    }
+
+    @Override
     protected Publisher<MutableHttpResponse<?>> doFilterOnce(HttpRequest<?> request, ServerFilterChain chain) {
         if (circuitBreakerSupport.shouldCircuitbreak(request)) {
             String key = bucketNameResolver.resolve(request);
@@ -43,7 +48,6 @@ public class CircuitBreakerFilter extends OncePerRequestHttpServerFilter {
 
             return Flowable.fromPublisher(chain.proceed(request))
                 .compose(CircuitBreakerOperator.of(circuitBreaker));
-
         } else {
             return chain.proceed(request);
         }

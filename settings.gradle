@@ -1,7 +1,6 @@
 rootProject.name = 'micronaut-ratelimiter'
 
 include 'ratelimiter-core'
-include 'circuitbreaker-core'
 
 include 'ratelimiter-resilience4j'
 include 'circuitbreaker-resilience4j'

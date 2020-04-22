@@ -1,4 +1,4 @@
-package io.micronaut.circuitbreaker.annotation;
+package io.micronaut.ratelimiter.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
