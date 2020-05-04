@@ -3,6 +3,8 @@ dependencies {
 
     implementation "io.github.resilience4j:resilience4j-ratelimiter:1.2.0"
     implementation "io.github.resilience4j:resilience4j-rxjava2:1.2.0"
+    implementation "io.micronaut.cache:micronaut-cache-core"
+
     api "io.micronaut:micronaut-inject"
     api "io.micronaut:micronaut-http-server"
     api project(":ratelimiter-core")
